@@ -1,10 +1,13 @@
 ---
-// No props needed for this simple header
+// src/components/Header.astro
+import ThemeToggler from './ThemeToggler.astro';
 ---
 <header>
   <h1>DSAS CCA Viewer</h1>
+
   <nav>
     <a href="/">Clubs</a>
     <a href="/staff">Staff</a>
+    <ThemeToggler/>
   </nav>
 </header>
