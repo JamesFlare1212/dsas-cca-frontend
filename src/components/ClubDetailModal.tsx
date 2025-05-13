@@ -12,18 +12,19 @@ const ClubDetailModal: React.FC<ClubDetailModalProps> = ({ isOpen, onClose, club
     return null;
   }
 
-  // Helper to format semester cost
-  const formatSemesterCost = (cost: number | null): string => {
-    if (cost === null) {
-      return 'N/A';
+  // Helper to display string fields that might be null or empty
+  const displayOptionalString = (value: string | null | undefined, labelIfEmpty: string = 'N/A'): string => {
+    if (value === null || value === undefined || value.trim() === "") {
+      return labelIfEmpty;
     }
-    if (cost === 0) {
-      return 'Free';
+    // Check for specific string values like "Free" for semesterCost, case-insensitive
+    if (value.toLowerCase() === 'free') {
+        return 'Free';
     }
-    // Assuming the cost is a simple number, you might want to add currency formatting
-    // e.g., using Intl.NumberFormat if it's a monetary value with a specific currency.
-    // For now, just displaying the number.
-    return String(cost); // Or `cost.toFixed(2)` if it's meant to be currency-like
+    if (value === "0") { // If cost is "0" string
+        return 'Free'; // Or display "0" if that's preferred
+    }
+    return value;
   };
 
   return (
@@ -33,36 +34,38 @@ const ClubDetailModal: React.FC<ClubDetailModalProps> = ({ isOpen, onClose, club
         <h2>{clubDetail.name}</h2>
         <div className="modal-scrollable-content">
           <img src={clubDetail.photo} alt={clubDetail.name} className="modal-photo" />
+          <h3>Meta Information</h3>
           <p><strong>ID:</strong> {clubDetail.id}</p>
           <p><strong>Academic Year:</strong> {clubDetail.academicYear}</p>
           <p><strong>Category:</strong> {clubDetail.category}</p>
           <p><strong>Grades:</strong> G{clubDetail.grades.min} - G{clubDetail.grades.max}</p>
           <p><strong>Schedule:</strong> {clubDetail.schedule}</p>
 
-          <h4>Meeting Information</h4>
+          <h3>Meeting Information</h3>
           <p><strong>Day:</strong> {clubDetail.meeting.day}</p>
           <p><strong>Time:</strong> {clubDetail.meeting.startTime} - {clubDetail.meeting.endTime}</p>
           <p><strong>Location:</strong> {clubDetail.meeting.location.room} ({clubDetail.meeting.location.block}, {clubDetail.meeting.location.site})</p>
           <p><strong>Duration:</strong> {clubDetail.duration.startDate} to {clubDetail.duration.endDate} ({clubDetail.duration.isRecurringWeekly ? "Recurring Weekly" : "Fixed Duration"})</p>
 
-          <h4>Description</h4>
+          <h3>Description</h3>
           <p style={{ whiteSpace: 'pre-wrap' }}>{clubDetail.description}</p>
 
-          {/* Display Semester Cost if it's not null */}
-          {/* The API defines semesterCost as 'null' or a number */}
-          <p><strong>Semester Cost:</strong> {formatSemesterCost(clubDetail.semesterCost)}</p>
+          <p><strong>Semester Cost:</strong> {displayOptionalString(clubDetail.semesterCost)}</p>
 
-          {/* Display Poor Weather Plan if it's not an empty string */}
-          {clubDetail.poorWeatherPlan && clubDetail.poorWeatherPlan.trim() !== '' && (
+          {/* Display Poor Weather Plan - display the section only if there's content */}
+          {clubDetail.poorWeatherPlan && clubDetail.poorWeatherPlan.trim() !== '' ? (
             <>
-              <h4>Poor Weather Plan</h4>
+              <h3>Poor Weather Plan</h3>
               <p style={{ whiteSpace: 'pre-wrap' }}>{clubDetail.poorWeatherPlan}</p>
             </>
+          ) : (
+            <p><strong>Poor Weather Plan:</strong> N/A</p>
           )}
+
 
           {clubDetail.requirements && clubDetail.requirements.length > 0 && (
             <>
-              <h4>Requirements</h4>
+              <h3>Requirements</h3>
               <ul>
                 {clubDetail.requirements.map((req, index) => <li key={`req-${index}`}>{req}</li>)}
               </ul>
@@ -71,7 +74,7 @@ const ClubDetailModal: React.FC<ClubDetailModalProps> = ({ isOpen, onClose, club
 
           {clubDetail.materials && clubDetail.materials.length > 0 && (
             <>
-              <h4>Materials Needed</h4>
+              <h3>Materials Needed</h3>
               <ul>
                 {clubDetail.materials.map((mat, index) => <li key={`mat-${index}`}>{mat}</li>)}
               </ul>

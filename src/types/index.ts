@@ -39,10 +39,10 @@ export interface ClubDetail {
   meeting: ClubMeeting;
   name: string;
   photo: string;
-  poorWeatherPlan: string;
+  poorWeatherPlan: string | null; // Can be string or null
   requirements: string[];
   schedule: string;
-  semesterCost: number | null;
+  semesterCost: string | null;    // Can be string or null
   staff: string[];
   staffForReports: string[];
   studentLeaders: string[];

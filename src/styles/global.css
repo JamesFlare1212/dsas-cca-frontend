@@ -5,6 +5,11 @@ body {
   background-color: #f4f7f6;
   color: #333;
   line-height: 1.6;
+  box-sizing: border-box; /* Add to body and inherit */
+}
+
+*, *::before, *::after {
+  box-sizing: inherit; /* Ensure all elements use the same box model */
 }
 
 header {
@@ -47,7 +52,7 @@ footer {
   margin-top: 2rem;
 }
 
-/* Search Bar Styles */
+/* Search Bar Styles - Desktop First */
 .search-bar-container {
   background-color: #ffffff;
   padding: 1.5rem;
@@ -55,9 +60,9 @@ footer {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  flex-wrap: wrap;
   gap: 1rem;
-  align-items: center;
+  align-items: center; /* Aligns items vertically if they have different heights on one line */
 }
 
 .search-bar-container input[type="text"],
@@ -67,12 +72,60 @@ footer {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
-  flex-grow: 1; /* Allow text input to take more space */
-  min-width: 150px; /* Minimum width for inputs/selects */
+  line-height: 1.4; /* Ensure consistent line height */
+  flex-grow: 1;
+  flex-shrink: 1;
+  /* min-width helps with wrapping on desktop */
 }
 
 .search-bar-container input[type="text"] {
- flex-basis: 300px; /* Give more base width to search text */
+  flex-basis: 300px; /* Ideal width on desktop */
+  min-width: 250px; /* Minimum it should shrink to on desktop before wrapping */
+}
+
+.search-bar-container select,
+.search-bar-container input[type="number"] {
+  flex-basis: 200px; /* Ideal width for these filters on desktop */
+  min-width: 150px; /* Minimum they should shrink to */
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  header nav {
+    margin-top: 0.5rem;
+  }
+  header nav a {
+    margin-left: 0;
+    margin-right: 1rem;
+  }
+
+  /* === Search Bar Mobile Styles === */
+  .search-bar-container {
+    flex-direction: column; /* Stack items vertically */
+    align-items: stretch;   /* Make items take up full available width */
+    padding: 1rem;          /* Adjust padding for mobile */
+    gap: 0.75rem;           /* Adjust gap between stacked items */
+  }
+
+  .search-bar-container input[type="text"],
+  .search-bar-container input[type="number"],
+  .search-bar-container select {
+    width: 100%;            /* Make each item take full width */
+    font-size: 0.9rem;      /* Slightly smaller font for better fit */
+    padding: 0.65rem 0.75rem; /* Adjust padding (vertical, horizontal) */
+    /* Remove flex-basis, min-width for mobile as width: 100% takes precedence */
+    flex-basis: auto;
+    min-width: 0;
+    flex-grow: 0; /* Not needed when width is 100% in a column */
+    flex-shrink: 0; /* Not needed when width is 100% in a column */
+  }
+  /* No specific overrides needed for input[type="text"] or input[type="number"] here
+     as they will follow the general rule above for mobile. */
 }
 
 
@@ -101,40 +154,47 @@ footer {
 
 .card-photo-container {
   width: 100%;
-  /* aspect-ratio: 16 / 9; /* Example: Adjust ratio (width / height) as needed, e.g., 4 / 3, 3 / 2, 1 / 1 */
-  /* Common CCA photo ratios might be closer to 4:3 or 16:9. Let's try 16:9 */
   aspect-ratio: 16 / 9;
-  background-color: #e0e0e0; /* Placeholder background */
-  overflow: hidden; /* Ensures image stays within bounds */
-  display: block; /* Or flex if alignment inside is needed, but block is simpler */
+  background-color: #e0e0e0;
+  overflow: hidden;
+  display: block;
 }
 
 .card-photo {
-  display: block; /* Removes potential extra space sometimes added below images */
+  display: block;
   width: 100%;
-  height: 100%; /* Make image fill the container */
-  object-fit: cover; /* Cover the container, cropping if necessary, maintaining aspect ratio */
+  height: 100%;
+  object-fit: cover;
 }
 
 .card-content {
   padding: 1rem;
-  flex-grow: 1; /* Allows content to fill remaining space */
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
 .card-content h3 {
   margin-top: 0;
-  margin-bottom: 0.5rem;
-  font-size: 1.4rem;
+  margin-bottom: 0.33rem;
+  font-size: 1.33rem;
   color: #333;
+}
+
+.card-content p {
+  margin-top: 0.33rem;
+  margin-bottom: 0.33rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .card-info-placeholder {
   font-style: italic;
   color: #888;
   font-size: 0.9rem;
-  min-height: 1.2em; /* Reserve space to reduce layout shift */
+  min-height: 1.2em;
 }
 
 .card-details-section {
@@ -161,7 +221,7 @@ footer {
   cursor: pointer;
   text-align: center;
   font-size: 0.9rem;
-  margin-top: 1rem; /* Pushes button to bottom if card content is short */
+  margin-top: 1rem;
   transition: background-color 0.2s ease-in-out;
 }
 
@@ -193,30 +253,6 @@ footer {
   color: #555;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  header nav {
-    margin-top: 0.5rem;
-  }
-  header nav a {
-    margin-left: 0;
-    margin-right: 1rem;
-  }
-  .search-bar-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .search-bar-container input[type="text"],
-  .search-bar-container input[type="number"],
-  .search-bar-container select {
-    width: 100%;
-  }
-}
-
 /* Modal Styles */
 .modal-overlay {
   position: fixed;
@@ -228,7 +264,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Ensure it's on top */
+  z-index: 1000;
   padding: 1rem;
 }
 
@@ -238,17 +274,17 @@ footer {
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   width: 90%;
-  max-width: 700px; /* Max width of modal */
-  max-height: 90vh; /* Max height of modal */
+  max-width: 700px;
+  max-height: 90vh;
   position: relative;
   display: flex;
   flex-direction: column;
 }
 
 .modal-scrollable-content {
-  overflow-y: auto; /* Makes content scrollable if it exceeds max-height */
-  flex-grow: 1; /* Allows this section to take available space and scroll */
-  padding-right: 1rem; /* For scrollbar spacing */
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 1rem;
 }
 
 .modal-content h2 {
@@ -259,17 +295,21 @@ footer {
   border-bottom: 1px solid #eee;
 }
 
-.modal-content h4 {
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: #1abc9c;
+.modal-content h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #1abc9c;
 }
 .modal-content p, .modal-content li {
-    margin-bottom: 0.5rem;
-    line-height: 1.6;
+  margin-top: 0.33rem;
+  margin-bottom: 0.33rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 .modal-content ul {
-    padding-left: 20px;
+  padding-left: 20px;
 }
 
 .modal-photo {
