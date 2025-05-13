@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dsas-cca-frontend
+    ports:
+      - "${PORT}:80"
+    env_file:
+      - .env
+    restart: unless-stopped
