@@ -1,0 +1,297 @@
+/* Basic Reset & Defaults */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background-color: #f4f7f6;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  background-color: #2c3e50;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+header nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 1.5rem;
+  font-size: 1.1rem;
+  transition: color 0.2s ease-in-out;
+}
+
+header nav a:hover {
+  color: #1abc9c;
+}
+
+main {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: #34495e;
+  color: #ecf0f1;
+  margin-top: 2rem;
+}
+
+/* Search Bar Styles */
+.search-bar-container {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-bar-container input[type="text"],
+.search-bar-container input[type="number"],
+.search-bar-container select {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  flex-grow: 1; /* Allow text input to take more space */
+  min-width: 150px; /* Minimum width for inputs/selects */
+}
+
+.search-bar-container input[type="text"] {
+ flex-basis: 300px; /* Give more base width to search text */
+}
+
+
+/* Grid for Cards */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card Styles */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+}
+
+.card-photo-container {
+  width: 100%;
+  /* aspect-ratio: 16 / 9; /* Example: Adjust ratio (width / height) as needed, e.g., 4 / 3, 3 / 2, 1 / 1 */
+  /* Common CCA photo ratios might be closer to 4:3 or 16:9. Let's try 16:9 */
+  aspect-ratio: 16 / 9;
+  background-color: #e0e0e0; /* Placeholder background */
+  overflow: hidden; /* Ensures image stays within bounds */
+  display: block; /* Or flex if alignment inside is needed, but block is simpler */
+}
+
+.card-photo {
+  display: block; /* Removes potential extra space sometimes added below images */
+  width: 100%;
+  height: 100%; /* Make image fill the container */
+  object-fit: cover; /* Cover the container, cropping if necessary, maintaining aspect ratio */
+}
+
+.card-content {
+  padding: 1rem;
+  flex-grow: 1; /* Allows content to fill remaining space */
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+  color: #333;
+}
+
+.card-info-placeholder {
+  font-style: italic;
+  color: #888;
+  font-size: 0.9rem;
+  min-height: 1.2em; /* Reserve space to reduce layout shift */
+}
+
+.card-details-section {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eee;
+}
+
+.card-details-section p {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+}
+
+.card-details-section strong {
+  color: #555;
+}
+
+.card-button {
+  background-color: #1abc9c;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 1rem; /* Pushes button to bottom if card content is short */
+  transition: background-color 0.2s ease-in-out;
+}
+
+.card-button:hover {
+  background-color: #16a085;
+}
+
+/* Loading and Error Messages */
+.loading-message, .error-message {
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 2rem;
+  color: #555;
+}
+
+.error-message {
+  color: #e74c3c;
+}
+
+/* Staff Card Specifics */
+.staff-card {
+  padding: 1.5rem;
+}
+.staff-card h3 {
+  font-size: 1.2rem;
+}
+.staff-card p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  header nav {
+    margin-top: 0.5rem;
+  }
+  header nav a {
+    margin-left: 0;
+    margin-right: 1rem;
+  }
+  .search-bar-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-bar-container input[type="text"],
+  .search-bar-container input[type="number"],
+  .search-bar-container select {
+    width: 100%;
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it's on top */
+  padding: 1rem;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 700px; /* Max width of modal */
+  max-height: 90vh; /* Max height of modal */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-scrollable-content {
+  overflow-y: auto; /* Makes content scrollable if it exceeds max-height */
+  flex-grow: 1; /* Allows this section to take available space and scroll */
+  padding-right: 1rem; /* For scrollbar spacing */
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #333;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-content h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #1abc9c;
+}
+.modal-content p, .modal-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+.modal-content ul {
+    padding-left: 20px;
+}
+
+.modal-photo {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #888;
+  cursor: pointer;
+  line-height: 1;
+}
+.modal-close-button:hover {
+  color: #333;
+}
