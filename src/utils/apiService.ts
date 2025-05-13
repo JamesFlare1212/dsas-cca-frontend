@@ -1,3 +1,4 @@
+// src/utils/apiService.ts
 import type {
   ApiClubListResponse,
   ClubDetail,
@@ -10,19 +11,42 @@ import type {
 
 const BASE_URL = 'https://dsas-cca.jamesflare.com/v1';
 
-async function fetchWithErrorHandling<T>(url: string): Promise<T> {
+// Helper function for delaying
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function fetchWithErrorHandling<T>(url: string, isRetryable: boolean = false, attempt: number = 1): Promise<T> {
+  const MAX_RETRY_ATTEMPTS_FOR_NON_PERSISTENT = 3; // Max retries for general errors if not persistent
+  const RETRY_DELAY_MS = 1000; // 1 second for persistent retry
+
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: "Failed to parse error response" }));
+      // For 4xx errors, typically don't retry indefinitely as it's a client/request issue
+      if (response.status >= 400 && response.status < 500 && isRetryable) {
+         console.warn(`API Client Error for ${url}: ${response.status}. Not retrying.`);
+         const errorData = await response.json().catch(() => ({ error: "Failed to parse client error response" }));
+         throw new Error(`API Client Error: ${response.status} ${response.statusText}. ${errorData?.error || ''}`);
+      }
+      // For 5xx server errors or network issues, retry is more appropriate
+      const errorData = await response.json().catch(() => ({ error: "Failed to parse server error response" }));
       throw new Error(
         `API Error: ${response.status} ${response.statusText}. ${errorData?.error || ''}`
       );
     }
     return response.json() as Promise<T>;
-  } catch (error) {
-    console.error(`Failed to fetch from ${url}:`, error);
-    throw error; // Re-throw to be handled by the caller
+  } catch (error: any) {
+    if (isRetryable) {
+      console.warn(`Attempt ${attempt} failed for ${url}: ${error.message}. Retrying in ${RETRY_DELAY_MS / 1000}s...`);
+      await delay(RETRY_DELAY_MS);
+      return fetchWithErrorHandling<T>(url, isRetryable, attempt + 1); // Persistent retry
+    } else if (attempt < MAX_RETRY_ATTEMPTS_FOR_NON_PERSISTENT) {
+      // Non-persistent retry for general errors (e.g., initial list fetches)
+      console.warn(`Attempt ${attempt} failed for ${url}: ${error.message}. Retrying (non-persistent)...`);
+      await delay(RETRY_DELAY_MS * attempt); // Simple increasing backoff
+      return fetchWithErrorHandling<T>(url, isRetryable, attempt + 1);
+    }
+    console.error(`Failed to fetch from ${url} after multiple attempts:`, error);
+    throw error; // Re-throw to be handled by the caller after max retries or if not retryable
   }
 }
 
@@ -46,8 +70,10 @@ export async function filterClubs(params: {
   return Object.entries(data).map(([id, club]) => ({ id, ...club }));
 }
 
+// Make getClubDetails retryable persistently
 export async function getClubDetails(activityId: string): Promise<ClubDetail> {
-  return fetchWithErrorHandling<ClubDetail>(`${BASE_URL}/activity/${activityId}`);
+  // Pass `true` for isRetryable to enable persistent retries for this specific endpoint
+  return fetchWithErrorHandling<ClubDetail>(`${BASE_URL}/activity/${activityId}`, true);
 }
 
 export async function getAvailableCategories(): Promise<CategoryCount> {
