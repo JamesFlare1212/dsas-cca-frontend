@@ -11,7 +11,7 @@ import {
 import { debounce } from '@utils/debounce';
 import ClubCard from './ClubCard';
 import SearchBar from './SearchBar';
-import ClubDetailModal from './ClubDetailModal'; // Import the modal
+import ClubDetailModal from './ClubDetailModal';
 
 const ClubList: React.FC = () => {
   const [allClubsData, setAllClubsData] = useState<ClubBasic[]>([]);
@@ -22,6 +22,7 @@ const ClubList: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedAcademicYear, setSelectedAcademicYear] = useState<string>('');
   const [selectedGrade, setSelectedGrade] = useState<string>('');
+  const [selectedStudentLed, setSelectedStudentLed] = useState<string>('');
 
   const [availableCategories, setAvailableCategories] = useState<CategoryCount>({});
   const [availableAcademicYears, setAvailableAcademicYears] = useState<AcademicYearCount>({});
@@ -79,15 +80,19 @@ const ClubList: React.FC = () => {
         return;
       }
 
+      const studentLedParam = selectedStudentLed === "" ? undefined : selectedStudentLed === "true";
+
       let clubs;
       if (
         selectedCategory || selectedAcademicYear ||
-        (gradeNumber && gradeNumber >= 1 && gradeNumber <= 12)
+        (gradeNumber && gradeNumber >= 1 && gradeNumber <= 12) ||
+        selectedStudentLed !== ""
       ) {
         clubs = await filterClubs({
           category: selectedCategory || undefined,
           academicYear: selectedAcademicYear || undefined,
           grade: gradeNumber,
+          isStudentLed: studentLedParam,
         });
       } else {
         clubs = await listAllClubs();
@@ -101,7 +106,7 @@ const ClubList: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCategory, selectedAcademicYear, selectedGrade, sortClubsDesc]);
+  }, [selectedCategory, selectedAcademicYear, selectedGrade, selectedStudentLed, sortClubsDesc]);
 
   useEffect(() => {
     fetchFilteredClubsFromAPI();
@@ -159,6 +164,8 @@ const ClubList: React.FC = () => {
         availableAcademicYears={availableAcademicYears}
         selectedGrade={selectedGrade}
         onGradeChange={setSelectedGrade}
+        selectedStudentLed={selectedStudentLed}
+        onStudentLedChange={setSelectedStudentLed}
       />
       {isLoading && <p className="loading-message">Filtering clubs...</p>}
       {!isLoading && displayedClubs.length === 0 && (
@@ -169,9 +176,9 @@ const ClubList: React.FC = () => {
           <ClubCard
             key={club.id}
             club={club}
-            initialDetails={clubDetailsCache[club.id]} // Pass cached details if available
+            initialDetails={clubDetailsCache[club.id]}
             onDetailsLoaded={handleDetailsLoadedForCache}
-            onViewMore={handleOpenModal} // Pass the modal opener function
+            onViewMore={handleOpenModal}
           />
         ))}
       </div>

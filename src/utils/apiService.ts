@@ -15,8 +15,8 @@ const BASE_URL = 'https://dsas-cca.jamesflare.com/v1';
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function fetchWithErrorHandling<T>(url: string, isRetryable: boolean = false, attempt: number = 1): Promise<T> {
-  const MAX_RETRY_ATTEMPTS_FOR_NON_PERSISTENT = 3; // Max retries for general errors if not persistent
-  const RETRY_DELAY_MS = 1000; // 1 second for persistent retry
+  const MAX_RETRY_ATTEMPTS_FOR_NON_PERSISTENT = 3;
+  const RETRY_DELAY_MS = 1000;
 
   try {
     const response = await fetch(url);
@@ -59,11 +59,13 @@ export async function filterClubs(params: {
   category?: string;
   academicYear?: string;
   grade?: number;
+  isStudentLed?: boolean | undefined;
 }): Promise<ClubBasic[]> {
   const queryParams = new URLSearchParams();
   if (params.category) queryParams.append('category', params.category);
   if (params.academicYear) queryParams.append('academicYear', params.academicYear);
   if (params.grade !== undefined) queryParams.append('grade', String(params.grade));
+  if (params.isStudentLed !== undefined) queryParams.append('isStudentLed', String(params.isStudentLed));
 
   const url = `${BASE_URL}/activity/list?${queryParams.toString()}`;
   const data = await fetchWithErrorHandling<ApiClubListResponse>(url);
