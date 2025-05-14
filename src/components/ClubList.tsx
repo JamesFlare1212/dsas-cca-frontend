@@ -1,3 +1,4 @@
+// src/components/ClubList.tsx
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Fuse from 'fuse.js';
 import type { ClubBasic, ClubDetail, CategoryCount, AcademicYearCount } from '@types';
@@ -31,6 +32,15 @@ const ClubList: React.FC = () => {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedClubForModal, setSelectedClubForModal] = useState<ClubDetail | null>(null);
+
+  /**
+   * Helper that sorts clubs by ID in descending order (high → low).
+   * `id` could be either a string or number, so we cast to number for comparison.
+   */
+  const sortClubsDesc = useCallback(
+    (clubs: ClubBasic[]) => [...clubs].sort((a, b) => Number(b.id) - Number(a.id)),
+    []
+  );
 
   const fuse = useMemo(() => {
     if (!allClubsData.length) return null;
@@ -70,7 +80,10 @@ const ClubList: React.FC = () => {
       }
 
       let clubs;
-      if (selectedCategory || selectedAcademicYear || (gradeNumber && gradeNumber >= 1 && gradeNumber <= 12)) {
+      if (
+        selectedCategory || selectedAcademicYear ||
+        (gradeNumber && gradeNumber >= 1 && gradeNumber <= 12)
+      ) {
         clubs = await filterClubs({
           category: selectedCategory || undefined,
           academicYear: selectedAcademicYear || undefined,
@@ -79,7 +92,8 @@ const ClubList: React.FC = () => {
       } else {
         clubs = await listAllClubs();
       }
-      setAllClubsData(clubs);
+      // Sort clubs from high ID → low ID before saving to state
+      setAllClubsData(sortClubsDesc(clubs));
     } catch (err) {
       console.error('Failed to fetch clubs:', err);
       setError('Could not load clubs. Please try refreshing.');
@@ -87,7 +101,7 @@ const ClubList: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCategory, selectedAcademicYear, selectedGrade]);
+  }, [selectedCategory, selectedAcademicYear, selectedGrade, sortClubsDesc]);
 
   useEffect(() => {
     fetchFilteredClubsFromAPI();
@@ -98,18 +112,19 @@ const ClubList: React.FC = () => {
       setDisplayedClubs([]);
       return;
     }
+
     if (!fuse) {
-      setDisplayedClubs(allClubsData);
+      setDisplayedClubs(sortClubsDesc(allClubsData));
       return;
     }
 
     if (searchTerm.trim() === '') {
-      setDisplayedClubs(allClubsData);
+      setDisplayedClubs(sortClubsDesc(allClubsData));
     } else {
-      const results = fuse.search(searchTerm);
-      setDisplayedClubs(results.map(result => result.item));
+      const results = fuse.search(searchTerm).map(result => result.item);
+      setDisplayedClubs(sortClubsDesc(results));
     }
-  }, [searchTerm, allClubsData, fuse]);
+  }, [searchTerm, allClubsData, fuse, sortClubsDesc]);
 
   const debouncedSetSearchTerm = useMemo(() => debounce(setSearchTerm, 300), []);
 
@@ -128,8 +143,8 @@ const ClubList: React.FC = () => {
     setSelectedClubForModal(null);
   }, []);
 
-
-  if (isLoading && !allClubsData.length && !Object.keys(availableCategories).length) return <p className="loading-message">Loading clubs and filters...</p>;
+  if (isLoading && !allClubsData.length && !Object.keys(availableCategories).length)
+    return <p className="loading-message">Loading clubs and filters...</p>;
   if (error) return <p className="error-message">{error}</p>;
 
   return (
