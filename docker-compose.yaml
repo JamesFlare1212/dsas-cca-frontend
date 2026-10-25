@@ -1,11 +1,39 @@
+name: dsas-cca-frontend
+
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: dsas-cca-frontend
+    image: ${APP_IMAGE:-ghcr.io/jamesflare1212/dsas-cca-frontend:latest}
     ports:
-      - "${PORT}:80"
-    env_file:
-      - .env
+      - '${PORT:-3040}:80'
+    labels:
+      com.centurylinklabs.watchtower.enable: 'true'
+      com.centurylinklabs.watchtower.scope: ${COMPOSE_PROJECT_NAME:-dsas-cca-frontend}
     restart: unless-stopped
+    stop_grace_period: 25s
+    logging:
+      driver: json-file
+      options:
+        max-size: '15m'
+        max-file: '3'
+
+  watchtower:
+    image: containrrr/watchtower:1.7.1@sha256:6dd50763bbd632a83cb154d5451700530d1e44200b268a4e9488fefdfcf2b038
+    environment:
+      DOCKER_API_VERSION: ${WATCHTOWER_DOCKER_API_VERSION:-1.44}
+      WATCHTOWER_LABEL_ENABLE: 'true'
+      WATCHTOWER_SCOPE: ${COMPOSE_PROJECT_NAME:-dsas-cca-frontend}
+      WATCHTOWER_POLL_INTERVAL: ${WATCHTOWER_POLL_INTERVAL:-300}
+      WATCHTOWER_CLEANUP: 'true'
+      WATCHTOWER_INCLUDE_RESTARTING: 'true'
+      WATCHTOWER_TIMEOUT: 25s
+    labels:
+      com.centurylinklabs.watchtower.enable: 'false'
+      com.centurylinklabs.watchtower.scope: ${COMPOSE_PROJECT_NAME:-dsas-cca-frontend}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: '15m'
+        max-file: '3'

@@ -1,0 +1,14 @@
+# Build a local image and exclude it from automatic registry updates.
+services:
+  app:
+    image: dsas-cca-frontend:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-https://dsas-cca.jamesflare.com/v1}
+    pull_policy: build
+    labels:
+      com.centurylinklabs.watchtower.enable: 'false'
+  watchtower:
+    profiles: [auto-update]
