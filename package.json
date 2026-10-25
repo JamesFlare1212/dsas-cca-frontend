@@ -32,7 +32,7 @@
     "cn": "^0.5.0",
     "mode-watcher": "^1.1.0",
     "prettier": "^3.6.2",
-    "prettier-plugin-svelte": "^3.4.1",
+    "prettier-plugin-svelte": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "shadcn-svelte": "^1.7.1",
     "svelte-check": "^4.4.5",
