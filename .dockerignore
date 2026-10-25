@@ -6,7 +6,7 @@
 !bun.lock
 !vite.config.ts
 !tsconfig.json
-!nginx.conf
+!Caddyfile
 !src/
 !src/**
 !static/

@@ -65,7 +65,7 @@ docker compose ps
 curl --fail http://127.0.0.1:3040/healthz
 ```
 
-Bun 构建后由 Nginx 提供静态页面，默认地址为 `http://localhost:3040`。容器内固定监听 `80`，`.env` 中的 `PORT` 仅修改宿主机端口；修改后需要同步调整上面的请求地址。已配置 `/staff/`、`/saved/` 的直接访问、404 页面、预压缩文件及不可变资源缓存。`/healthz` 和 Docker HEALTHCHECK 检查前端服务是否存活，不检查后端 API。
+Bun 构建后由 Caddy 提供静态页面，默认地址为 `http://localhost:3040`。容器内固定监听 `80`，`.env` 中的 `PORT` 仅修改宿主机端口；修改后需要同步调整上面的请求地址。已配置 `/staff/`、`/saved/` 的直接访问、404 页面、预压缩文件及不可变资源缓存。`/healthz` 和 Docker HEALTHCHECK 检查前端服务是否存活，不检查后端 API。Caddy 仅在容器内提供 HTTP 静态文件服务，公网 HTTPS 由部署入口处理。
 
 默认部署直接使用预构建镜像，不需要服务器安装 Bun 或下载源码依赖。首次使用须等默认分支 CI 的 `publish` 任务完成。新建 GHCR 包可能为私有；需要匿名拉取时，在[包设置](https://github.com/users/JamesFlare1212/packages/container/package/dsas-cca-frontend)中将其设为 Public。
 
@@ -104,7 +104,7 @@ docker compose --project-name dsas-cca-frontend-local -f docker-compose.yaml -f 
 
 此模式使用 `dsas-cca-frontend:local`，关闭该应用的自动更新，Watchtower 默认不启动；更改 API 地址后重新运行相同命令即可。后续 `logs`、`down` 等命令也需带上相同的项目名和两个 `-f` 参数。若与镜像部署同时运行，请设置不同的 `PORT`。从已有部署切换到本地构建时，先使用原项目的 Compose 命令执行 `down`，避免端口冲突。
 
-Docker 构建固定 Bun 1.4.3、Nginx 1.30.6 及多架构镜像摘要，使用锁文件安装依赖；构建上下文仅允许构建所需的源文件，排除 `.env`、登录凭据、宿主机依赖和本地工具配置。
+Docker 构建固定 Bun 1.4.3、Caddy 2.11.7 及多架构镜像摘要，使用锁文件安装依赖；构建上下文仅允许构建所需的源文件，排除 `.env`、登录凭据、宿主机依赖和本地工具配置。
 
 ### 私有 GHCR 镜像
 
