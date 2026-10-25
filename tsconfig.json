@@ -1,17 +1,21 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  "extends": "$app/tsconfig",
+  "include": ["src", "tests", "*.ts"],
+  "exclude": ["src/service-worker"],
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "react",
+    "types": ["$app/types", "bun"],
+    "allowJs": true,
+    "checkJs": true,
     "esModuleInterop": true,
-    "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "moduleResolution": "bundler",
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@pages/*": ["src/pages/*"],
-      "@styles/*": ["src/styles/*"],
-      "@utils/*": ["src/utils/*"],
-      "@types/*": ["src/types/*"]
+      "#lib": ["./src/lib/index.ts"],
+      "#lib/*": ["./src/lib/*"]
     }
   }
 }

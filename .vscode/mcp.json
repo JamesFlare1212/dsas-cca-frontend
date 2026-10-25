@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "shadcn-svelte": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "shadcn-svelte-mcp@1.14.0"]
+    }
+  }
+}
