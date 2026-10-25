@@ -1,0 +1,19 @@
+# Standalone Git-source deployment for Coolify.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+      args:
+        PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-https://dsas-cca.jamesflare.com/v1}
+    expose:
+      - '80'
+    # Inherits the Dockerfile health check at /healthz.
+    restart: unless-stopped
+    stop_grace_period: 25s
+    logging:
+      driver: json-file
+      options:
+        max-size: '15m'
+        max-file: '3'

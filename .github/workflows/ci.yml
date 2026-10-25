@@ -42,6 +42,7 @@ jobs:
         run: |
           sh -n scripts/test-container.sh
           docker compose --env-file example.env config --quiet
+          docker compose -f docker-compose.coolify.yaml config --quiet
           docker compose --env-file example.env --project-name dsas-cca-frontend-local -f docker-compose.yaml -f docker-compose.build.yaml config --quiet
           mkdir -p "$RUNNER_TEMP/watchtower-auth"
           printf '{}\n' > "$RUNNER_TEMP/watchtower-auth/config.json"

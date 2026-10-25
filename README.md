@@ -108,6 +108,33 @@ docker compose --project-name dsas-cca-frontend-local -f docker-compose.yaml -f 
 
 Docker 构建固定 Bun 1.4.4、Caddy 2.11.7 及多架构镜像摘要，使用锁文件安装依赖；构建上下文仅允许构建所需的源文件，排除 `.env`、登录凭据、宿主机依赖和本地工具配置。
 
+### Coolify 从 Git 自动构建
+
+使用独立文件 `docker-compose.coolify.yaml`，由 Coolify 在服务器上调用现有 Dockerfile，
+通过 Bun 构建，再由 Caddy 在容器内的 `80` 端口提供服务。继承镜像的 `/healthz` 健康检查。
+
+1. 在 Coolify 中从 **Git 仓库**创建 Application，选择仓库和部署分支，
+   构建方式选择 **Docker Compose / Compose**。
+2. Base Directory 设置为 `/`，Docker Compose Location 设置为
+   `/docker-compose.coolify.yaml`，仅使用这一份 Compose 文件，保持默认的非 Raw 部署模式。
+3. 保存并加载 Compose，为 `app` 服务配置域名（例如 `https://cca.example.com`），
+   目标容器端口为 `80`。由 Coolify 代理管理入口和 HTTPS，无需设置宿主机 `PORT`。
+4. 如需自定义 API，在 Coolify 中设置 `PUBLIC_API_BASE_URL`，并使其在构建时可用。
+   默认值为 `https://dsas-cca.jamesflare.com/v1`；修改后需要重新构建。
+5. 开启 **Auto Deploy / Deploy on push (webhooks)**。通过 GitHub App 等集成接收推送事件；
+   使用公开仓库 URL 或 Deploy Key 时，按 Coolify 的 Webhooks 页面提示在 Git 平台配置 push webhook。
+6. 首次点击 **Deploy**。之后推送到配置的远程分支时，Coolify 会自动拉取源码、构建并部署。
+   仅本地 commit 不会触发，可在 Deployment Logs 中核对部署的提交。
+
+此文件不依赖 `.env`、GHCR 或 Watchtower。配置校验命令：
+
+```bash
+docker compose -f docker-compose.coolify.yaml config --quiet
+```
+
+参考 Coolify 官方文档：[Docker Compose](https://coolify.io/docs/applications/builds/docker-compose)、
+[自动部署](https://coolify.io/docs/applications/deployments/automatic-deployments)。
+
 ### 私有 GHCR 镜像
 
 保留私有包时，在服务器终端使用有 `read:packages` 权限的凭据登录。独立 Docker 配置同时供 Compose 和 Watchtower 使用：
