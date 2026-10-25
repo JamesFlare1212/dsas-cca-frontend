@@ -24,8 +24,10 @@ bun run dev
 
 开发地址：`http://localhost:5173`。
 
+类型检查通过 `svelte-check --tsgo` 使用 TypeScript 7 原生编译器（`@typescript/native` 别名）。按 [Svelte 官方兼容方案](https://github.com/sveltejs/language-tools/blob/master/packages/svelte-check/README.md#typescript-7-supports)，同时保留 TypeScript 6 的 JavaScript API，供 SvelteKit 配置解析与 Svelte 源码转换使用；它不替代 TS7 的类型诊断。
+
 ```bash
-bun run check          # Svelte 与 TypeScript 检查
+bun run check          # Svelte 与 TypeScript 7 原生类型检查
 bun test               # 请求、搜索、数据兼容和收藏存储测试
 bun run format:check   # 格式检查
 bun run build          # 静态预渲染到 dist/
