@@ -15,7 +15,7 @@ DSAS 课外活动目录，使用 **Svelte 5 + SvelteKit 3 + Vite 8 + Tailwind CS
 
 ## 本地开发
 
-推荐 Bun 1.4.3（锁文件与容器使用的版本）。
+推荐 Bun 1.4.4（锁文件与容器使用的版本）。
 
 ```bash
 bun install --frozen-lockfile
@@ -104,7 +104,7 @@ docker compose --project-name dsas-cca-frontend-local -f docker-compose.yaml -f 
 
 此模式使用 `dsas-cca-frontend:local`，关闭该应用的自动更新，Watchtower 默认不启动；更改 API 地址后重新运行相同命令即可。后续 `logs`、`down` 等命令也需带上相同的项目名和两个 `-f` 参数。若与镜像部署同时运行，请设置不同的 `PORT`。从已有部署切换到本地构建时，先使用原项目的 Compose 命令执行 `down`，避免端口冲突。
 
-Docker 构建固定 Bun 1.4.3、Nginx 1.30.6 及多架构镜像摘要，使用锁文件安装依赖；构建上下文仅允许构建所需的源文件，排除 `.env`、登录凭据、宿主机依赖和本地工具配置。
+Docker 构建固定 Bun 1.4.4、Nginx 1.30.6 及多架构镜像摘要，使用锁文件安装依赖；构建上下文仅允许构建所需的源文件，排除 `.env`、登录凭据、宿主机依赖和本地工具配置。
 
 ### 私有 GHCR 镜像
 
