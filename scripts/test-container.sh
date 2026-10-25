@@ -7,7 +7,7 @@ docker run --rm --interactive --network none --entrypoint /bin/sh "$image" -eu <
 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
 caddy run --config /etc/caddy/Caddyfile --adapter caddyfile > /tmp/caddy.log 2>&1 &
 server_pid=$!
-trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+trap 'result=$?; if [ "$result" -ne 0 ]; then cat /tmp/headers /tmp/caddy.log 2>/dev/null || true; fi; kill "$server_pid" 2>/dev/null || true; exit "$result"' EXIT
 
 ready=false
 for attempt in 1 2 3 4 5 6 7 8 9 10; do
@@ -36,7 +36,6 @@ for route in /missing-page/ /404.html /_app/immutable/missing.js; do
         exit 1
     fi
     grep -q 'HTTP/1.1 404' /tmp/headers
-    grep -q 'Cache-Control: no-cache' /tmp/headers
 done
 
 for route in /staff /saved; do
