@@ -8,7 +8,7 @@
     "build": "bun --bun vite build",
     "preview": "bun --bun vite preview --host 0.0.0.0",
     "prepare": "bun --bun svelte-kit sync",
-    "check": "bun --bun svelte-kit sync && bun --bun svelte-check --tsgo --tsconfig ./tsconfig.json",
+    "check": "bun --bun svelte-kit sync && bun scripts/check.ts",
     "test": "bun test",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -33,7 +33,7 @@
     "cn": "^0.5.0",
     "mode-watcher": "^1.1.0",
     "prettier": "^3.6.2",
-    "prettier-plugin-svelte": "^3.4.1",
+    "prettier-plugin-svelte": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "shadcn-svelte": "^1.7.1",
     "svelte-check": "^4.7.7",
