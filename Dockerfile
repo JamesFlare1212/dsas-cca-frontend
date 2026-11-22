@@ -9,7 +9,7 @@ ARG PUBLIC_API_BASE_URL=https://dsas-cca.jamesflare.com/v1
 ENV PUBLIC_API_BASE_URL=${PUBLIC_API_BASE_URL}
 RUN bun run build
 
-FROM caddy:2.11.7-alpine@sha256:eb4d35b7452d1ab6171fbdbe8d9275b2301dad6dad92115d91e19fb9b24d510f AS runner
+FROM caddy:2.11.9-alpine@sha256:003a97808e781aa9f7e75cc2f43d34d461099031faf5e20faefb9f61126836f0 AS runner
 LABEL org.opencontainers.image.source="https://github.com/JamesFlare1212/dsas-cca-frontend"
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=builder /app/dist/ /srv/
